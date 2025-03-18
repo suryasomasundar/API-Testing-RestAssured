@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN'
+        maven 'MVN' // This must match the Maven name in Global Tool Config
     }
 
     stages {
@@ -33,7 +33,7 @@ pipeline {
         stage('Generate Allure Report') {
             steps {
                 allure([
-                    commandline: 'Allure',
+                    commandline: 'Allure', // 👈 Must match name in Global Tool Config
                     includeProperties: false,
                     results: [[path: 'TestRestAssured/target/allure-results']]
                 ])
@@ -43,10 +43,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build & Tests passed. Allure report published.'
+            echo '✅ Build and tests passed. Allure report generated.'
         }
         failure {
-            echo '❌ Build failed. Check logs and test reports.'
+            echo '❌ Build failed. Check logs, test results, or Allure configuration.'
         }
     }
 }
