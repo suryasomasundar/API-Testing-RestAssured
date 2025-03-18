@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN' // Must match the Maven name in Jenkins Global Tool Config
+        maven 'MVN'
     }
 
     stages {
@@ -28,26 +28,19 @@ pipeline {
             }
         }
 
-        stage('Publish Allure HTML Report') {
+        stage('Archive Allure Report') {
             steps {
-                publishHTML(target: [
-                    reportDir: 'TestRestAssured/target/site/allure-maven-plugin',
-                    reportFiles: 'index.html',
-                    reportName: 'Allure Report',
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true
-                ])
+                archiveArtifacts artifacts: 'TestRestAssured/target/site/allure-maven-plugin/**', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build completed. Allure report published!'
+            echo '✅ Build completed. Allure report archived!'
         }
         failure {
-            echo '❌ Build failed. Check console output or test results.'
+            echo '❌ Build failed. Check logs and archived files.'
         }
     }
 }
