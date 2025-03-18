@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN' // This must match the Maven name in Global Tool Config
+        maven 'MVN'
     }
 
     stages {
@@ -20,22 +20,23 @@ pipeline {
             }
         }
 
-        stage('Publish TestNG Results') {
+        stage('Generate Allure HTML Report') {
             steps {
-                step([
-                    $class: 'Publisher',
-                    reportFilenamePattern: 'TestRestAssured/test-output/testng-results.xml',
-                    showFailedBuilds: true
-                ])
+                dir('TestRestAssured') {
+                    sh 'mvn allure:report'
+                }
             }
         }
 
-        stage('Generate Allure Report') {
+        stage('Publish HTML Report') {
             steps {
-                allure([
-                    commandline: 'Allure', // 👈 Must match name in Global Tool Config
-                    includeProperties: false,
-                    results: [[path: 'TestRestAssured/target/allure-results']]
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'TestRestAssured/target/site/allure-maven-plugin',
+                    reportFiles: 'index.html',
+                    reportName: 'Allure Report'
                 ])
             }
         }
@@ -43,10 +44,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build and tests passed. Allure report generated.'
+            echo '✅ Allure HTML report generated successfully.'
         }
         failure {
-            echo '❌ Build failed. Check logs, test results, or Allure configuration.'
+            echo '❌ Something went wrong. Check Maven or paths.'
         }
     }
 }
