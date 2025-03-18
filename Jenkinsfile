@@ -53,10 +53,10 @@ pipeline {
                     echo "🔼 Uploading Allure report to S3..."
 
                     aws s3 sync TestRestAssured/target/site/allure-maven-plugin \
-                        s3://allure-report-restassured/$BUILD_NUMBER/ --region us-west-1 --delete
+                        s3://allure-report-restassured/$BUILD_NUMBER/ --region us-east-1 --delete
 
                     aws s3 sync TestRestAssured/target/site/allure-maven-plugin \
-                        s3://allure-report-restassured/latest/ --region us-west-1 --delete
+                        s3://allure-report-restassured/latest/ --region us-east-1 --delete
                 '''
             }
         }
