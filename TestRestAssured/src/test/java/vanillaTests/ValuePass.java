@@ -1,19 +1,23 @@
 package vanillaTests;
 
+import io.qameta.allure.testng.AllureTestNg;
 import io.restassured.response.Response;
 import org.json.JSONObject;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+@Listeners({AllureTestNg.class})
 public class ValuePass {
 
     private final String BASE_URL = "https://jsonplaceholder.typicode.com";
 
     @Test
-
     public void getTitleAndUseInPostRequest() {
+        System.out.println("Running test...");
+
         Response getResponse = given()
                 .baseUri(BASE_URL)
                 .when()

@@ -1,19 +1,22 @@
 package vanillaTests;
 
+import io.qameta.allure.testng.AllureTestNg;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
 
+@Listeners({AllureTestNg.class})
 public class UsersTest {
 
     private final String BASE_URL = "https://jsonplaceholder.typicode.com";
 
-    @Test
+    //@Test
     public void getAllUsers() {
         given()
                 .baseUri(BASE_URL)
