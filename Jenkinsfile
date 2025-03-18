@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN'
-        allure 'Allure' // Match name from Global Tool Config
+        maven 'MVN' // Only valid tool here
     }
 
     stages {
