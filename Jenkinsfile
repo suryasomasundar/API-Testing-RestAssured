@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN' // Only valid tool here
+        maven 'MVN' // Matches Maven in Global Tool Config
     }
 
     stages {
@@ -32,11 +32,11 @@ pipeline {
             }
         }
 
-        stage('Allure Report') {
+        stage('Generate Allure Report') {
             steps {
                 allure([
                     includeProperties: false,
-                    jdk: '',
+                    jdk: '', // Use default JDK
                     results: [[path: 'TestRestAssured/target/allure-results']]
                 ])
             }
@@ -44,8 +44,11 @@ pipeline {
     }
 
     post {
-        always {
-            echo '📊 Allure report should now be available in the Jenkins build.'
+        success {
+            echo '✅ Build & Tests passed. Allure report published.'
+        }
+        failure {
+            echo '❌ Build failed. Check logs and test reports.'
         }
     }
 }
