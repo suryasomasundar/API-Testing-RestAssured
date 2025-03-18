@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN' // This must match the name in Jenkins Global Tool Configuration
+        maven 'MVN'
+        allure 'Allure' // Match name from Global Tool Config
     }
 
     stages {
@@ -31,14 +32,21 @@ pipeline {
                 ])
             }
         }
+
+        stage('Allure Report') {
+            steps {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'TestRestAssured/target/allure-results']]
+                ])
+            }
+        }
     }
 
     post {
-        success {
-            echo '✅ Build & API Tests completed successfully.'
-        }
-        failure {
-            echo '❌ Build failed. Check the logs and test results.'
+        always {
+            echo '📊 Allure report should now be available in the Jenkins build.'
         }
     }
 }
