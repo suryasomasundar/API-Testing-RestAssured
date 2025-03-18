@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN'
+        maven 'MVN' // Must match the Maven name in Jenkins Global Tool Config
     }
 
     stages {
@@ -12,10 +12,10 @@ pipeline {
             }
         }
 
-        stage('Run API Tests') {
+        stage('Run API Tests via TestNG Suite') {
             steps {
                 dir('TestRestAssured') {
-                    sh 'mvn clean test'
+                    sh 'mvn clean test -DsuiteXmlFile=testng.xml'
                 }
             }
         }
@@ -28,15 +28,15 @@ pipeline {
             }
         }
 
-        stage('Publish HTML Report') {
+        stage('Publish Allure HTML Report') {
             steps {
                 publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
                     reportDir: 'TestRestAssured/target/site/allure-maven-plugin',
                     reportFiles: 'index.html',
-                    reportName: 'Allure Report'
+                    reportName: 'Allure Report',
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true
                 ])
             }
         }
@@ -44,10 +44,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Allure HTML report generated successfully.'
+            echo '✅ Build completed. Allure report published!'
         }
         failure {
-            echo '❌ Something went wrong. Check Maven or paths.'
+            echo '❌ Build failed. Check console output or test results.'
         }
     }
 }
