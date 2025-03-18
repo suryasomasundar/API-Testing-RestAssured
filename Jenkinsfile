@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN'
+        maven 'MVN' // Must match your configured Maven tool name
     }
 
     stages {
@@ -28,19 +28,31 @@ pipeline {
             }
         }
 
-        stage('Archive Allure Report') {
+        stage('Upload Allure Report to S3') {
             steps {
-                archiveArtifacts artifacts: 'TestRestAssured/target/site/allure-maven-plugin/**', fingerprint: true
+                sh '''
+                    echo "🔼 Uploading Allure report to S3..."
+
+                    # Sync versioned report to S3
+                    aws s3 sync TestRestAssured/target/site/allure-maven-plugin \
+                        s3://allure-report-restassured/$BUILD_NUMBER/ --region us-west-1 --delete
+
+                    # Also update the 'latest' report
+                    aws s3 sync TestRestAssured/target/site/allure-maven-plugin \
+                        s3://allure-report-restassured/latest/ --region us-west-1 --delete
+                '''
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build completed. Allure report archived!'
+            echo '✅ Build succeeded. Allure report is ready!'
+            echo "🌐 Current Build Report: http://allure-report-restassured.s3-website-us-west-1.amazonaws.com/$BUILD_NUMBER/index.html"
+            echo "🌐 Latest Report: http://allure-report-restassured.s3-website-us-west-1.amazonaws.com/latest/index.html"
         }
         failure {
-            echo '❌ Build failed. Check logs and archived files.'
+            echo '❌ Build or upload failed. Please check logs.'
         }
     }
 }
