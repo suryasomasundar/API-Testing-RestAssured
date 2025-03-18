@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'MVN' // Matches Maven in Global Tool Config
+        maven 'MVN'
     }
 
     stages {
@@ -25,8 +25,6 @@ pipeline {
                 step([
                     $class: 'Publisher',
                     reportFilenamePattern: 'TestRestAssured/test-output/testng-results.xml',
-                    escapeTestDescription: false,
-                    escapeExceptionMessages: false,
                     showFailedBuilds: true
                 ])
             }
@@ -35,8 +33,8 @@ pipeline {
         stage('Generate Allure Report') {
             steps {
                 allure([
+                    commandline: 'Allure',
                     includeProperties: false,
-                    jdk: '', // Use default JDK
                     results: [[path: 'TestRestAssured/target/allure-results']]
                 ])
             }
