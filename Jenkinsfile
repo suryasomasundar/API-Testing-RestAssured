@@ -65,8 +65,8 @@ pipeline {
     post {
         success {
             echo '✅ Build succeeded. Allure report uploaded!'
-            echo "🌐 Report (Build): http://allure-report-restassured.s3-website-us-west-1.amazonaws.com/$BUILD_NUMBER/index.html"
-            echo "🌐 Report (Latest): http://allure-report-restassured.s3-website-us-west-1.amazonaws.com/latest/index.html"
+            echo "🌐 Report (Build): http://allure-report-restassured.s3-website-us-east-1.amazonaws.com/$BUILD_NUMBER/index.html"
+            echo "🌐 Report (Latest): http://allure-report-restassured.s3-website-us-east-1.amazonaws.com/latest/index.html"
         }
         failure {
             echo '❌ Build or upload failed. Please check logs.'
